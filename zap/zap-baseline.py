@@ -323,7 +323,7 @@ def main(argv):
         #print(zap.core.urls())
 
         #debug
-        logging.info(urls())
+        logging.info(urls)
         logging.info(type(urls))
         logging.info(dir(urls))
         logging.info(id(urls))
