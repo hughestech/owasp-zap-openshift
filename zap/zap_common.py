@@ -174,7 +174,7 @@ def start_zap(port, extra_zap_params):
         '-config', 'api.addrs.addr.name=.*',
         '-config', 'api.addrs.addr.regex=true']
 
-    with open('zap.out', "w") as outfile:
+    with open('zap.out', "wb") as outfile:
         subprocess.Popen(params + extra_zap_params, stdout=outfile)
 
 
