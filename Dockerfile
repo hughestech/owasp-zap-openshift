@@ -54,5 +54,7 @@ RUN chown root:root /zap -R && \
 
 WORKDIR /var/lib/jenkins
 
+CMD pip install -U python_owasp_zap_v2.4
+
 # Run the Jenkins JNLP client
 ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
