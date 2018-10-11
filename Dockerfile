@@ -1,60 +1,86 @@
 # This dockerfile builds the zap stable release
-FROM centos:centos7
-MAINTAINER Deven Phillips <deven.phillips@redhat.com>
+FROM ubuntu:18.04
+LABEL maintainer="psiinon@gmail.com"
 
-RUN yum install -y epel-release && \
-    yum clean all
-RUN yum install -y redhat-rpm-config \
-    make automake autoconf gcc gcc-c++ \
-    libstdc++ libstdc++-devel \
-    java-1.8.0-openjdk wget curl \
-    xmlstarlet git x11vnc gettext tar \
-    xorg-x11-server-Xvfb openbox xterm \
-    net-tools python-pip \
-    firefox nss_wrapper java-1.8.0-openjdk-headless \
-    java-1.8.0-openjdk-devel nss_wrapper git && \
-    yum clean all
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN pip install --upgrade pip
-RUN pip install zapcli
-# Install latest dev version of the python API
-RUN pip install python-owasp-zap-v2.4
+RUN apt-get update && apt-get install -q -y --fix-missing \
+	make \
+	automake \
+	autoconf \
+	gcc g++ \
+	openjdk-8-jdk \
+	ruby \
+	wget \
+	curl \
+	xmlstarlet \
+	unzip \
+	git \
+	openbox \
+	xterm \
+	net-tools \
+	ruby-dev \
+	python-pip \
+	firefox \
+	xvfb \
+	x11vnc && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /zap/wrk
-ADD zap /zap/
+RUN gem install zapr
+RUN pip install --upgrade pip zapcli python-owasp-zap-v2.4
 
-RUN mkdir -p /var/lib/jenkins/.vnc
+RUN useradd -d /home/zap -m -s /bin/bash zap
+RUN echo zap:zap | chpasswd
+RUN mkdir /zap && chown zap:zap /zap
 
-# Copy the entrypoint
-COPY configuration/* /var/lib/jenkins/
-COPY configuration/run-jnlp-client /usr/local/bin/run-jnlp-client
+WORKDIR /zap
+
+#Change to the zap user so things get done as the right person (apart from copy)
+USER zap
+
+RUN mkdir /home/zap/.vnc
+
+# Download and expand the latest stable release 
+RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions.xml | xmlstarlet sel -t -v //url |grep -i Linux | wget -nv --content-disposition -i - -O - | tar zxv && \
+	cp -R ZAP*/* . &&  \
+	rm -R ZAP* && \
+	# Setup Webswing
+	curl -s -L https://bitbucket.org/meszarv/webswing/downloads/webswing-2.5.5-distribution.zip > webswing.zip && \
+	unzip webswing.zip && \
+	rm webswing.zip && \
+	mv webswing-* webswing && \
+	# Remove Webswing demos
+	rm -R webswing/demo/ && \
+	# Accept ZAP license
+	touch AcceptedLicense
+
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
-ENV PATH $JAVA_HOME/bin:/zap:$PATH
+ENV PATH $JAVA_HOME/bin:/zap/:$PATH
 ENV ZAP_PATH /zap/zap.sh
-ENV HOME /var/lib/jenkins
 
 # Default port for use with zapcli
 ENV ZAP_PORT 8080
+ENV HOME /home/zap/
 
-COPY policies /var/lib/jenkins/.ZAP/policies/
-COPY .xinitrc /var/lib/jenkins/
+COPY zap* /zap/
+COPY webswing.config /zap/webswing/
+COPY policies /home/zap/.ZAP/policies/
+COPY .xinitrc /home/zap/
 
-WORKDIR /zap
-# Download and expand the latest stable release 
-RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions-dev.xml | xmlstarlet sel -t -v //url |grep -i Linux | wget -q --content-disposition -i - -O - | tar zx --strip-components=1 && \
-    curl -s -L https://bitbucket.org/meszarv/webswing/downloads/webswing-2.3-distribution.zip | jar -x && \
-    touch AcceptedLicense
-ADD webswing.config /zap/webswing-2.3/webswing.config
+#Copy doesn't respect USER directives so we need to chown and to do that we need to be root
+USER root
 
-RUN chown root:root /zap -R && \
-    chown root:root -R /var/lib/jenkins && \
-    chmod 777 /var/lib/jenkins -R && \
-    chmod 777 /zap -R
+RUN chown zap:zap /zap/zap-x.sh && \
+	chown zap:zap /zap/zap-baseline.py && \
+	chown zap:zap /zap/zap-webswing.sh && \
+	chown zap:zap /zap/webswing/webswing.config && \
+	chown zap:zap -R /home/zap/.ZAP/ && \
+	chown zap:zap /home/zap/.xinitrc && \
+	chmod a+x /home/zap/.xinitrc
 
-WORKDIR /var/lib/jenkins
+#Change back to zap at the end
+USER zap
 
-CMD pip install -U python_owasp_zap_v2.4
-
-# Run the Jenkins JNLP client
-ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
+HEALTHCHECK --retries=5 --interval=5s CMD zap-cli status
