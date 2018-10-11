@@ -322,6 +322,7 @@ def main(argv):
             logging.warning('No URLs found - is the target URL accessible? Local services may not be accessible from the Docker container')
         else:
             if detailed_output:
+                print('---  URLs ----')
                 print('Total of ' + str(num_urls) + ' URLs')
 
             alert_dict = zap_get_alerts(zap, target, blacklist, out_of_scope_dict)
