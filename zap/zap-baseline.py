@@ -48,11 +48,11 @@ import os
 import os.path
 import sys
 import time
-from six.moves.urllib.request import urlopen
-
 from datetime import datetime
+from six.moves.urllib.request import urlopen
 from zapv2 import ZAPv2
 from zap_common import *
+
 
 timeout = 120
 config_dict = {}
@@ -99,7 +99,6 @@ def usage():
 
 
 def main(argv):
-
     global min_level
     global in_progress_issues
     cid = ''
@@ -130,6 +129,8 @@ def main(argv):
     ignore_count = 0
     warn_inprog_count = 0
     fail_inprog_count = 0
+
+    check_zap_client_version()
 
     try:
         opts, args = getopt.getopt(argv, "t:c:u:g:m:n:r:w:x:l:daijp:sz:P:D:")
@@ -335,7 +336,7 @@ def main(argv):
 
             if generate:
                 # Create the config file
-                with open(base_dir + generate, 'wb') as f:
+                with open(base_dir + generate, 'w') as f:
                     f.write('# zap-baseline rule configuration file\n')
                     f.write('# Change WARN to IGNORE to ignore rule or FAIL to fail if rule matches\n')
                     f.write('# Only the rule identifiers are used - the names are just for info\n')
@@ -376,18 +377,15 @@ def main(argv):
 
             if report_html:
                 # Save the report
-                with open(base_dir + report_html, 'wb') as f:
-                    f.write(zap.core.htmlreport())
+                write_report(base_dir + report_html, zap.core.htmlreport())
 
             if report_md:
                 # Save the report
-                with open(base_dir + report_md, 'wb') as f:
-                    f.write(zap.core.mdreport())
+                write_report(base_dir + report_md, zap.core.mdreport())
 
             if report_xml:
                 # Save the report
-                with open(base_dir + report_xml, 'wb') as f:
-                    f.write(zap.core.xmlreport())
+                write_report(base_dir + report_xml, zap.core.xmlreport())
 
             print('FAIL-NEW: ' + str(fail_count) + '\tFAIL-INPROG: ' + str(fail_inprog_count) +
                 '\tWARN-NEW: ' + str(warn_count) + '\tWARN-INPROG: ' + str(warn_inprog_count) +
@@ -404,7 +402,7 @@ def main(argv):
         else:
             print("ERROR %s" % e)
             logging.warning('I/O error: ' + str(e))
-            dump_log_file(cid)
+        dump_log_file(cid)
 
     except:
         print("ERROR " + str(sys.exc_info()[0]))

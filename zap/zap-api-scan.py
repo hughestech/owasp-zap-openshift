@@ -137,6 +137,8 @@ def main(argv):
     warn_inprog_count = 0
     fail_inprog_count = 0
 
+    check_zap_client_version()
+
     try:
         opts, args = getopt.getopt(argv, "t:f:c:u:g:m:n:r:w:x:l:daijp:sz:P:D:")
     except getopt.GetoptError as exc:
@@ -463,18 +465,15 @@ def main(argv):
 
             if report_html:
                 # Save the report
-                with open(base_dir + report_html, 'w') as f:
-                    f.write(zap.core.htmlreport())
+                write_report(base_dir + report_html, zap.core.htmlreport())
 
             if report_md:
                 # Save the report
-                with open(base_dir + report_md, 'w') as f:
-                    f.write(zap.core.mdreport())
+                write_report(base_dir + report_md, zap.core.mdreport())
 
             if report_xml:
                 # Save the report
-                with open(base_dir + report_xml, 'w') as f:
-                    f.write(zap.core.xmlreport())
+                write_report(base_dir + report_xml, zap.core.xmlreport())
 
             print('FAIL-NEW: ' + str(fail_count) + '\tFAIL-INPROG: ' + str(fail_inprog_count) +
                 '\tWARN-NEW: ' + str(warn_count) + '\tWARN-INPROG: ' + str(warn_inprog_count) +
@@ -491,7 +490,7 @@ def main(argv):
         else:
             print("ERROR %s" % e)
             logging.warning('I/O error: ' + str(e))
-            dump_log_file(cid)
+        dump_log_file(cid)
 
     except:
         print("ERROR " + str(sys.exc_info()[0]))
