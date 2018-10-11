@@ -13,12 +13,13 @@ RUN yum install -y redhat-rpm-config \
     net-tools python-pip \
     firefox nss_wrapper java-1.8.0-openjdk-headless \
     java-1.8.0-openjdk-devel nss_wrapper git && \
+    https://centos7.iuscommunity.org/ius-release.rpm  python36u && \
     yum clean all
 
-RUN pip install --upgrade pip
-RUN pip install zapcli
+RUN pip3 install --upgrade pip
+RUN pip3 install zapcli
 # Install latest dev version of the python API
-RUN pip install python-owasp-zap-v2.4
+RUN pip3 install python-owasp-zap-v2.4
 
 RUN mkdir -p /zap/wrk
 ADD zap /zap/
@@ -54,7 +55,7 @@ RUN chown root:root /zap -R && \
 
 WORKDIR /var/lib/jenkins
 
-RUN pip install --upgrade pip zapcli python-owasp-zap-v2.4
+RUN pip3 install --upgrade pip zapcli python-owasp-zap-v2.4
 
 # Run the Jenkins JNLP client
 ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
