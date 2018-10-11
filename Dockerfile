@@ -54,7 +54,7 @@ RUN chown root:root /zap -R && \
 
 WORKDIR /var/lib/jenkins
 
-RUN pip install --upgrade pip zapcli python-owasp-zap-v2.4
+RUN pip install --upgrade pip zapcli python-owasp-zap-v2.4==0.0.12
 
 # Run the Jenkins JNLP client
 ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
