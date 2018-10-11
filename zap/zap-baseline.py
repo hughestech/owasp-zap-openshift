@@ -327,7 +327,7 @@ def main(argv):
         print(dir(urls))
         print(id(urls))
         #getattr(urls)
-        print(hasattr(urls))
+        #print(hasattr(urls))
         print(globals(urls))
         print(locals(urls))
         print(callable(urls))
