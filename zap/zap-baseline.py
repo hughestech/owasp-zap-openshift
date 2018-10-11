@@ -376,17 +376,17 @@ def main(argv):
 
             if report_html:
                 # Save the report
-                with open(base_dir + report_html, 'w') as f:
+                with open(base_dir + report_html, 'wb') as f:
                     f.write(zap.core.htmlreport())
 
             if report_md:
                 # Save the report
-                with open(base_dir + report_md, 'w') as f:
+                with open(base_dir + report_md, 'wb') as f:
                     f.write(zap.core.mdreport())
 
             if report_xml:
                 # Save the report
-                with open(base_dir + report_xml, 'w') as f:
+                with open(base_dir + report_xml, 'wb') as f:
                     f.write(zap.core.xmlreport())
 
             print('FAIL-NEW: ' + str(fail_count) + '\tFAIL-INPROG: ' + str(fail_inprog_count) +
