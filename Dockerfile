@@ -2,7 +2,8 @@
 FROM centos:centos7
 MAINTAINER Deven Phillips <deven.phillips@redhat.com>
 
-RUN yum install -y epel-release && \
+RUN yum install -y epel-release https://centos7.iuscommunity.org/ius-release.rpm && \
+    yum  -y update && \
     yum clean all
 RUN yum install -y redhat-rpm-config \
     make automake autoconf gcc gcc-c++ \
@@ -12,14 +13,15 @@ RUN yum install -y redhat-rpm-config \
     xorg-x11-server-Xvfb openbox xterm \
     net-tools python-pip \
     firefox nss_wrapper java-1.8.0-openjdk-headless \
-    java-1.8.0-openjdk-devel nss_wrapper git && \
-    rh-python36 && \
+    java-1.8.0-openjdk-devel nss_wrapper git \
+    centos-release-scl  \
+    python36u python36u-libs python36u-devel python36u-pip  \
     yum clean all
 
-RUN pip3 install --upgrade pip
-RUN pip3 install zapcli
+RUN pip3.6 install --upgrade pip
+RUN pip3.6 install zapcli
 # Install latest dev version of the python API
-RUN pip3 install python-owasp-zap-v2.4
+RUN pip3.6 install python-owasp-zap-v2.4
 
 RUN mkdir -p /zap/wrk
 ADD zap /zap/
@@ -55,7 +57,7 @@ RUN chown root:root /zap -R && \
 
 WORKDIR /var/lib/jenkins
 
-RUN pip3 install --upgrade pip zapcli python-owasp-zap-v2.4
+RUN pip3.6 install --upgrade pip zapcli python-owasp-zap-v2.4==0.0.12
 
 # Run the Jenkins JNLP client
 ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
