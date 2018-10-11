@@ -13,7 +13,7 @@ RUN yum install -y redhat-rpm-config \
     net-tools python-pip \
     firefox nss_wrapper java-1.8.0-openjdk-headless \
     java-1.8.0-openjdk-devel nss_wrapper git && \
-    centos-release-scl rh-python36 && \
+    rh-python36 && \
     yum clean all
 
 RUN pip3 install --upgrade pip
