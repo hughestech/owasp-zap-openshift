@@ -323,14 +323,15 @@ def main(argv):
         #print(zap.core.urls())
 
         #debug
-        print(type(urls))
-        print(dir(urls))
+        logging.info(urls())
+        logging.info(type(urls))
+        logging.info(dir(urls))
         print(id(urls))
         #getattr(urls)
         #print(hasattr(urls))
-        print(globals(urls))
-        print(locals(urls))
-        print(callable(urls))
+        logging.info(globals(urls))
+        logging.info(locals(urls))
+        logging.info(callable(urls))
 
 
         num_urls = len(zap.core.urls())
