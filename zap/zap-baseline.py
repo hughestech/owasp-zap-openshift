@@ -335,7 +335,7 @@ def main(argv):
 
             if generate:
                 # Create the config file
-                with open(base_dir + generate, 'w') as f:
+                with open(base_dir + generate, 'wb') as f:
                     f.write('# zap-baseline rule configuration file\n')
                     f.write('# Change WARN to IGNORE to ignore rule or FAIL to fail if rule matches\n')
                     f.write('# Only the rule identifiers are used - the names are just for info\n')
