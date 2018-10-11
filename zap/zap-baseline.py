@@ -326,9 +326,8 @@ def main(argv):
         logging.info(urls())
         logging.info(type(urls))
         logging.info(dir(urls))
-        print(id(urls))
-        #getattr(urls)
-        #print(hasattr(urls))
+        logging.info(id(urls))
+
         logging.info(globals(urls))
         logging.info(locals(urls))
         logging.info(callable(urls))
