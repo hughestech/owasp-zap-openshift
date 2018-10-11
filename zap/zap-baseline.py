@@ -322,12 +322,12 @@ def main(argv):
         urls = zap.core.urls()
 
         #debug
-        logging.info(urls)
+        logging.info("urls" + urls)
         logging.info(type(urls))
         logging.info(dir(urls))
         logging.info(id(urls))
 
-        logging.info(globals(urls))
+        
         logging.info(locals(urls))
         logging.info(callable(urls))
 
