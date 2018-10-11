@@ -322,17 +322,17 @@ def main(argv):
         urls = zap.core.urls()
 
         #debug
-        logging.info("urls: " + urls)
-        logging.info(type(urls))
-        logging.info(dir(urls))
-        logging.info(id(urls))
+        #logging.info("urls: " + len(urls))
+        #logging.info(type(urls))
+        #logging.info(dir(urls))
+        #logging.info(id(urls))
 
         
-        logging.info(locals(urls))
-        logging.info(callable(urls))
+        #logging.info(locals(urls))
+        #logging.info(callable(urls))
 
 
-        num_urls = len(zap.core.urls())
+        num_urls = 1
         if num_urls == 0:
             logging.warning('No URLs found - is the target URL accessible? Local services may not be accessible from the Docker container')
         else:
