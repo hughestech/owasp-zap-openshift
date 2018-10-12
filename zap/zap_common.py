@@ -384,4 +384,4 @@ def write_report(file_path, report):
         if not isinstance(report, binary_type):
             report = report.encode('utf-8')
 
-        f.write(report.encode('utf-8'))
+        f.write(report)
