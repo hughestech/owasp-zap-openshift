@@ -319,7 +319,7 @@ def main(argv):
         print('---  URLs count ------')
 
         # Print out a count of the number of urls
-        urls = zap.core.urls()
+        #urls = zap.core.urls()
 
         #debug
         #logging.info("urls: " + len(urls))
