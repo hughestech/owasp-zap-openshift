@@ -51,7 +51,7 @@ import os
 import os.path
 import sys
 import time
-import urllib2
+import urllib
 from datetime import datetime
 from zapv2 import ZAPv2
 from zap_common import *
