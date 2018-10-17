@@ -291,6 +291,8 @@ def zap_active_scan(zap, target, policy):
     ascan_scan_id = zap.ascan.scan(target, recurse=True, scanpolicyname=policy)
     time.sleep(5)
 
+    print(zap.ascan.status(ascan_scan_id))
+
     while(int(zap.ascan.status(ascan_scan_id)) < 100):
         logging.debug('Active Scan progress %: ' + zap.ascan.status(ascan_scan_id))
         time.sleep(5)
